@@ -61,7 +61,7 @@ dependencies {
     implementation(libs.androidx.material3)
     implementation(files("../spotify-app-remote-release-0.8.0.aar"))
     implementation("com.google.code.gson:gson:2.10.1")
-
+    implementation ("com.spotify.android:auth:1.2.3")
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
