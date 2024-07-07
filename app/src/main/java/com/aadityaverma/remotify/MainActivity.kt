@@ -1,6 +1,8 @@
 package com.aadityaverma.remotify
 
+import android.content.Context
 import android.content.Intent
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.service.controls.ControlsProviderService.TAG
 import android.util.Log
@@ -31,8 +33,10 @@ import com.spotify.sdk.android.auth.AuthorizationResponse
 private val clientId= "cfc7917d55a545c3b5ac2b350b77864f"
 private val redirectURI= "remotify://callback"
 private var spotifyAppRemote: SpotifyAppRemote? = null
-class MainActivity : ComponentActivity() {
+private var token: String? = null
 
+class MainActivity : ComponentActivity() {
+    private lateinit var sharedPreferences: SharedPreferences
 
     private fun connected(){
         spotifyAppRemote?.let {
@@ -44,12 +48,21 @@ class MainActivity : ComponentActivity() {
             }
         }
     }
-
+    private fun saveToken(accessToken: String?, TOKEN_KEY: String) {
+        accessToken?.let {
+            token = it
+            with(sharedPreferences.edit()) {
+                putString(TOKEN_KEY, it)
+                apply()
+            }
+        }
+    }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        sharedPreferences = getSharedPreferences("access_token", Context.MODE_PRIVATE)
         val request: AuthorizationRequest =
             AuthorizationRequest.Builder(clientId, AuthorizationResponse.Type.TOKEN, redirectURI)
-                .setScopes(arrayOf("app-remote-control"))
+                .setScopes(arrayOf("app-remote-control","streaming"))
                 .build()
 
         AuthorizationClient.openLoginActivity(this, 1337, request)
@@ -71,6 +84,10 @@ class MainActivity : ComponentActivity() {
                 AuthorizationResponse.Type.TOKEN -> {
                     // do whatever you need with the access token `response.accessToken`
                         connected()
+
+                    token=response.accessToken
+                    saveToken(response.accessToken,"access_token")
+                    Log.d(TAG,"i am so dumb" + sharedPreferences.getString("access_token", null))
                     // ADD YOUR CODE HERE and it should be able to play !
                 }
 
