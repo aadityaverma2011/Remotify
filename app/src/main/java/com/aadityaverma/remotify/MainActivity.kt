@@ -12,7 +12,6 @@ import androidx.activity.enableEdgeToEdge
 import com.spotify.android.appremote.api.ConnectionParams;
 import com.spotify.android.appremote.api.Connector;
 import com.spotify.android.appremote.api.SpotifyAppRemote;
-
 import com.spotify.protocol.client.Subscription;
 import com.spotify.protocol.types.PlayerState;
 import com.spotify.protocol.types.Track;
@@ -24,10 +23,20 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import com.aadityaverma.remotify.data.SpotifySearchResponse
+import com.aadityaverma.remotify.data.api.SpotifyApiService
+import com.aadityaverma.remotify.data.datasource.RetrofitBuild
 import com.aadityaverma.remotify.ui.theme.RemotifyTheme
 import com.spotify.sdk.android.auth.AuthorizationClient
 import com.spotify.sdk.android.auth.AuthorizationRequest
 import com.spotify.sdk.android.auth.AuthorizationResponse
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import retrofit2.http.Query
+import java.net.HttpURLConnection
+import java.net.URL
 
 
 private val clientId= "cfc7917d55a545c3b5ac2b350b77864f"
@@ -38,15 +47,19 @@ private var token: String? = null
 class MainActivity : ComponentActivity() {
     private lateinit var sharedPreferences: SharedPreferences
 
-    private fun connected(){
+    private suspend fun connected(){
         spotifyAppRemote?.let {
             val playlistURi= "spotify:playlist:62qcRDHNodjIt93acbHFo3"
-            it.playerApi.play(playlistURi)
+            it.playerApi.play("spotify:track:080bjWE3zWsP0DVJzr85ej")
             it.playerApi.subscribeToPlayerState().setEventCallback {
                 val track: Track = it.track
                 Log.d("Main Activity", track.name + "by" + track.artist.name)
             }
         }
+        val searchquery:String = "Badshah Interstellar"
+        searchTrack(searchquery, sharedPreferences.getString("access_token",null).toString())
+        val newlogstring = getProfile(sharedPreferences.getString("access_token",null))
+        Log.d(TAG,"profilex"+ newlogstring )
     }
     private fun saveToken(accessToken: String?, TOKEN_KEY: String) {
         accessToken?.let {
@@ -83,7 +96,8 @@ class MainActivity : ComponentActivity() {
             when (response.type) {
                 AuthorizationResponse.Type.TOKEN -> {
                     // do whatever you need with the access token `response.accessToken`
-                        connected()
+
+
 
                     token=response.accessToken
                     saveToken(response.accessToken,"access_token")
@@ -114,7 +128,9 @@ class MainActivity : ComponentActivity() {
                 spotifyAppRemote = appRemote
                 Log.d("MainActivity", "Connected! Yay!")
                 // Now you can start interacting with App Remote
-                connected()
+                CoroutineScope(Dispatchers.Main).launch {
+                    connected()
+                }
             }
 
             override fun onFailure(throwable: Throwable) {
@@ -129,6 +145,46 @@ class MainActivity : ComponentActivity() {
             SpotifyAppRemote.disconnect(it)
         }
 
+    }
+
+    suspend fun getProfile(accessToken: String?):String{
+        return withContext(Dispatchers.IO){
+            val url= URL("https://api.spotify.com/v1/me")
+            val connection= url.openConnection() as HttpURLConnection
+            connection.setRequestProperty("Authorization", "Bearer $accessToken")
+            val inputStream = connection.inputStream
+            val response = inputStream.bufferedReader().use { it.readText() }
+            response
+        }
+    }
+
+    fun searchTrack(query: String, token: String) {
+        val spotifyApiService = RetrofitBuild.retrofit.create(SpotifyApiService::class.java)
+        val call = spotifyApiService.searchTracks("Bearer $token", query)
+        call.enqueue(object : retrofit2.Callback<SpotifySearchResponse> {
+            override fun onResponse(
+                call: retrofit2.Call<SpotifySearchResponse>,
+                response: retrofit2.Response<SpotifySearchResponse>
+            ) {
+                if (response.isSuccessful) {
+                    val tracks = response.body()?.tracks?.items ?: emptyList()
+                    tracks.forEach { track ->
+                        println("Track ID: ${track.uri}")
+                        println("Track Name: ${track.name}")
+                        println("Artists: ${track.artists.joinToString { it.name }}")
+                        println("Album: ${track.album.name}")
+                        println("-----")
+                    }
+                } else {
+                    println("Error: ${response.code()}")
+                }
+
+            }
+
+            override fun onFailure(call: retrofit2.Call<SpotifySearchResponse>, t: Throwable) {
+                println("Error: ${t.message}")
+            }
+        })
     }
 }
 
