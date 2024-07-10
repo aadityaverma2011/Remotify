@@ -1,5 +1,7 @@
 package com.aadityaverma.remotify.presentation.components
 
+import android.service.controls.ControlsProviderService.TAG
+import android.util.Log
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -41,7 +43,7 @@ fun TrackCard(
             modifier = Modifier
                 .size(56.dp)
                 .clip(MaterialTheme.shapes.small),
-            model= ImageRequest.Builder(context).data(track.imageUri.raw).build(),
+            model= ImageRequest.Builder(context).data("https://i.scdn.co/image/ab6775700000ee8505ad8e68673e9bd72d99d7a8").build(),
             contentDescription= null,
             contentScale= ContentScale.Crop
         )
@@ -50,7 +52,7 @@ fun TrackCard(
                 modifier = Modifier.weight(1f)
             ) {
             Text(text = track.name, maxLines = 1 , style= MaterialTheme.typography.titleMedium)
-            Text(text = track.artist.name, maxLines = 1 , style= MaterialTheme.typography.labelSmall)
+//            Text(text = track.artist.name, maxLines = 1 , style= MaterialTheme.typography.labelSmall)
 
         }
 

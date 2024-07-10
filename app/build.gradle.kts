@@ -62,12 +62,13 @@ dependencies {
     implementation(libs.androidx.ui.graphics)
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
-
+    implementation ("androidx.fragment:fragment-ktx:1.5.2")
     //Dagger Hilt
     implementation ("com.google.dagger:hilt-android:2.48")
     implementation(libs.androidx.paging.common.android)
     implementation(libs.androidx.paging.compose.android)
     kapt ("com.google.dagger:hilt-compiler:2.48")
+    implementation ("androidx.navigation:navigation-compose:2.7.7")
     implementation ("androidx.hilt:hilt-navigation-compose:1.0.0")
 
     //SPOTIFY

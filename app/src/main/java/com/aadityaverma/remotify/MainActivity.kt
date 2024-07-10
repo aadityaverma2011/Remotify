@@ -27,17 +27,21 @@ import androidx.navigation.NavGraph
 import androidx.navigation.compose.rememberNavController
 import com.aadityaverma.remotify.data.SpotifySearchResponse
 import com.aadityaverma.remotify.data.api.SpotifyApiService
-import com.aadityaverma.remotify.data.datasource.RetrofitBuild
+import com.aadityaverma.remotify.di.AppModule.provideMusicApi
+//import com.aadityaverma.remotify.data.datasource.RetrofitBuild
+import com.aadityaverma.remotify.presentation.navgraph.Navigation
 
 import com.aadityaverma.remotify.presentation.search.SearchViewModel
 import com.aadityaverma.remotify.ui.theme.RemotifyTheme
 import com.spotify.sdk.android.auth.AuthorizationClient
 import com.spotify.sdk.android.auth.AuthorizationRequest
 import com.spotify.sdk.android.auth.AuthorizationResponse
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import retrofit2.Retrofit
 import retrofit2.http.Query
 import java.net.HttpURLConnection
 import java.net.URL
@@ -48,6 +52,7 @@ private val redirectURI= "remotify://callback"
 private var spotifyAppRemote: SpotifyAppRemote? = null
 private var token: String? = null
 
+@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     private lateinit var sharedPreferences: SharedPreferences
 
@@ -86,7 +91,7 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             RemotifyTheme {
-
+                        Navigation()
 
             }
         }
@@ -164,7 +169,7 @@ class MainActivity : ComponentActivity() {
     }
 
     fun searchTrack(query: String, token: String) {
-        val spotifyApiService = RetrofitBuild.retrofit.create(SpotifyApiService::class.java)
+        val spotifyApiService = provideMusicApi()
         val call = spotifyApiService.searchTracks("Bearer $token", query)
         call.enqueue(object : retrofit2.Callback<SpotifySearchResponse> {
             override fun onResponse(

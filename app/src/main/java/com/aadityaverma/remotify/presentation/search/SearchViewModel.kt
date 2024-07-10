@@ -1,5 +1,7 @@
 package com.aadityaverma.remotify.presentation.search
 
+import android.service.controls.ControlsProviderService.TAG
+import android.util.Log
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
@@ -31,6 +33,7 @@ class SearchViewModel @Inject constructor(
     private fun searchMusic() {
         val tracks= musicusecases.searchMusic(state.value.searchQuery).cachedIn(viewModelScope)
         _state.value = state.value.copy(tracks = tracks)
+        Log.d(TAG,"nvm" + state.value.searchQuery)
     }
 
 }

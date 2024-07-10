@@ -20,6 +20,7 @@ import com.aadityaverma.remotify.presentation.common.TrackList
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SearchScreen(
+    navController: NavController,
     state: SearchState,
     event: (SearchEvent) -> Unit,
 
