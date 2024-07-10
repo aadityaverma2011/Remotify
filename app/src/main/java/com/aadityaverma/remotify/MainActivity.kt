@@ -50,13 +50,13 @@ class MainActivity : ComponentActivity() {
     private suspend fun connected(){
         spotifyAppRemote?.let {
             val playlistURi= "spotify:playlist:62qcRDHNodjIt93acbHFo3"
-            it.playerApi.play("spotify:track:080bjWE3zWsP0DVJzr85ej")
+            it.playerApi.play("spotify:track:5aScaOmYqiIOIbLS1ZuqHt")
             it.playerApi.subscribeToPlayerState().setEventCallback {
                 val track: Track = it.track
                 Log.d("Main Activity", track.name + "by" + track.artist.name)
             }
         }
-        val searchquery:String = "Badshah Interstellar"
+        val searchquery:String = "namastute seedhe maut"
         searchTrack(searchquery, sharedPreferences.getString("access_token",null).toString())
         val newlogstring = getProfile(sharedPreferences.getString("access_token",null))
         Log.d(TAG,"profilex"+ newlogstring )
@@ -170,6 +170,10 @@ class MainActivity : ComponentActivity() {
                     val tracks = response.body()?.tracks?.items ?: emptyList()
                     tracks.forEach { track ->
                         println("Track ID: ${track.uri}")
+
+                        track.album?.uri?.let {
+                            println("Track image: ${it}")
+                        } ?: println("Track image: No image available")
                         println("Track Name: ${track.name}")
                         println("Artists: ${track.artists.joinToString { it.name }}")
                         println("Album: ${track.album.name}")
@@ -178,7 +182,6 @@ class MainActivity : ComponentActivity() {
                 } else {
                     println("Error: ${response.code()}")
                 }
-
             }
 
             override fun onFailure(call: retrofit2.Call<SpotifySearchResponse>, t: Throwable) {
