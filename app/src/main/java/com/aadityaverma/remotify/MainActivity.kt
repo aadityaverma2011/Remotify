@@ -23,9 +23,13 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.navigation.NavGraph
+import androidx.navigation.compose.rememberNavController
 import com.aadityaverma.remotify.data.SpotifySearchResponse
 import com.aadityaverma.remotify.data.api.SpotifyApiService
 import com.aadityaverma.remotify.data.datasource.RetrofitBuild
+
+import com.aadityaverma.remotify.presentation.search.SearchViewModel
 import com.aadityaverma.remotify.ui.theme.RemotifyTheme
 import com.spotify.sdk.android.auth.AuthorizationClient
 import com.spotify.sdk.android.auth.AuthorizationRequest
@@ -82,6 +86,7 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             RemotifyTheme {
+
 
             }
         }
