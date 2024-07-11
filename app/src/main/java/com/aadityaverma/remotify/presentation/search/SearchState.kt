@@ -1,7 +1,8 @@
 package com.aadityaverma.remotify.presentation.search
 
 import androidx.paging.PagingData
-import com.spotify.protocol.types.Track
+import com.aadityaverma.remotify.data.datasource.Track
+
 import kotlinx.coroutines.flow.Flow
 
 data class SearchState(

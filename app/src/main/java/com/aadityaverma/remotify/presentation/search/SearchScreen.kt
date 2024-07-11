@@ -12,10 +12,13 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.NavController
 import androidx.paging.compose.collectAsLazyPagingItems
+import com.aadityaverma.remotify.data.repository.Player
 import com.aadityaverma.remotify.presentation.Dimens.MediumPadding1
 import com.aadityaverma.remotify.presentation.common.TrackList
+
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -48,14 +51,19 @@ fun SearchScreen(
                 )
             }
         ){
-
+            null
         }
         Spacer(modifier = Modifier.height(MediumPadding1))
         state.tracks?.let {
             val tracks = it.collectAsLazyPagingItems()
-            TrackList(tracks = tracks, onClick = {
-                //handle click
-            })
+            TrackList(
+                tracks = tracks,
+                callback = (LocalContext.current as Player), // Cast context to Player interface
+                onClick = {
+                    // Handle click event if needed
+                }
+            )
+
         }
     }
 }

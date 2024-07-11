@@ -27,6 +27,7 @@ import androidx.navigation.NavGraph
 import androidx.navigation.compose.rememberNavController
 import com.aadityaverma.remotify.data.SpotifySearchResponse
 import com.aadityaverma.remotify.data.api.SpotifyApiService
+import com.aadityaverma.remotify.data.repository.Player
 import com.aadityaverma.remotify.di.AppModule.provideMusicApi
 //import com.aadityaverma.remotify.data.datasource.RetrofitBuild
 import com.aadityaverma.remotify.presentation.navgraph.Navigation
@@ -49,27 +50,30 @@ import java.net.URL
 
 private val clientId= "cfc7917d55a545c3b5ac2b350b77864f"
 private val redirectURI= "remotify://callback"
-private var spotifyAppRemote: SpotifyAppRemote? = null
+var spotifyAppRemote: SpotifyAppRemote? = null
 private var token: String? = null
 
 @AndroidEntryPoint
-class MainActivity : ComponentActivity() {
+class MainActivity : ComponentActivity(),Player {
     private lateinit var sharedPreferences: SharedPreferences
 
     private suspend fun connected(){
-        spotifyAppRemote?.let {
-            val playlistURi= "spotify:playlist:62qcRDHNodjIt93acbHFo3"
-            it.playerApi.play("spotify:track:5aScaOmYqiIOIbLS1ZuqHt")
-            it.playerApi.subscribeToPlayerState().setEventCallback {
-                val track: Track = it.track
-                Log.d("Main Activity", track.name + "by" + track.artist.name)
-            }
-        }
+//        spotifyAppRemote?.let {
+//            val playlistURi= "spotify:playlist:62qcRDHNodjIt93acbHFo3"
+//            it.playerApi.play("spotify:track:5aScaOmYqiIOIbLS1ZuqHt")
+//            it.playerApi.subscribeToPlayerState().setEventCallback {
+//                val track: Track = it.track
+//                Log.d("Main Activity", track.name + "by" + track.artist.name)
+//            }
+//        }
+//        playTrack()
         val searchquery:String = "namastute seedhe maut"
         searchTrack(searchquery, sharedPreferences.getString("access_token",null).toString())
         val newlogstring = getProfile(sharedPreferences.getString("access_token",null))
         Log.d(TAG,"profilex"+ newlogstring )
     }
+
+
     private fun saveToken(accessToken: String?, TOKEN_KEY: String) {
         accessToken?.let {
             token = it
@@ -177,13 +181,14 @@ class MainActivity : ComponentActivity() {
                 response: retrofit2.Response<SpotifySearchResponse>
             ) {
                 if (response.isSuccessful) {
+                    val jsonResponse = response.body()?.toString() // or use the appropriate method to get the raw JSON string
+                    println("Raw JSON response: $jsonResponse")
                     val tracks = response.body()?.tracks?.items ?: emptyList()
                     tracks.forEach { track ->
                         println("Track ID: ${track.uri}")
-
-                        track.album?.uri?.let {
-                            println("Track image: ${it}")
-                        } ?: println("Track image: No image available")
+                        track.album.images.firstOrNull()?.let {
+                            println("Image: ${it.url}")
+                        } ?: println("Image: No image available")
                         println("Track Name: ${track.name}")
                         println("Artists: ${track.artists.joinToString { it.name }}")
                         println("Album: ${track.album.name}")
@@ -198,6 +203,12 @@ class MainActivity : ComponentActivity() {
                 println("Error: ${t.message}")
             }
         })
+    }
+
+    override fun playTrack(track: com.aadityaverma.remotify.data.datasource.Track) {
+        spotifyAppRemote?.let {
+            it.playerApi.play(track.uri)
+        }
     }
 }
 

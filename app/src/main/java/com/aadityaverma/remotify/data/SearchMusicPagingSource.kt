@@ -4,7 +4,8 @@ import android.content.SharedPreferences
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
 import com.aadityaverma.remotify.data.api.SpotifyApiService
-import com.spotify.protocol.types.Track
+import com.aadityaverma.remotify.data.datasource.Track
+
 import retrofit2.Call
 import retrofit2.awaitResponse
 import retrofit2.http.Query
@@ -17,7 +18,7 @@ class SearchMusicPagingSource(
     private val searchQuery: String,
     private val sharedPreferences: SharedPreferences
 
-) :PagingSource<Int,Track>(){
+) :PagingSource<Int, Track>(){
     override fun getRefreshKey(state: PagingState<Int, Track>): Int? {
         return state.anchorPosition?.let { anchorPage ->
             val anchorPage = state.closestPageToPosition(anchorPage)

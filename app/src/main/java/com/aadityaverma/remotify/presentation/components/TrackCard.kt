@@ -22,12 +22,13 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
+import com.aadityaverma.remotify.data.datasource.Track
 import com.aadityaverma.remotify.presentation.Dimens.TrackCardSize
 import com.spotify.protocol.types.Artist
 import com.spotify.protocol.types.ImageUri
 
 
-import com.spotify.protocol.types.Track
+
 
 @Composable
 fun TrackCard(
@@ -43,7 +44,7 @@ fun TrackCard(
             modifier = Modifier
                 .size(56.dp)
                 .clip(MaterialTheme.shapes.small),
-            model= ImageRequest.Builder(context).data("https://i.scdn.co/image/ab6775700000ee8505ad8e68673e9bd72d99d7a8").build(),
+            model= ImageRequest.Builder(context).data(track.album.images.firstOrNull()?.url).build(),
             contentDescription= null,
             contentScale= ContentScale.Crop
         )
@@ -60,9 +61,9 @@ fun TrackCard(
 }
 
 
-@Preview
-@Composable
-fun TrackCardPreview(){
-    TrackCard(track = Track(Artist("Seedhe Maut"," "), null, null , 0L,"Namastute"," ", ImageUri("https://i.scdn.co/image/ab67616d00004851d65e2670b7176415b9d88a59"),false,false  )
-    )
-}
+//@Preview
+//@Composable
+//fun TrackCardPreview(){
+//    TrackCard(track = Track(Artist("Seedhe Maut"," "), null, null , 0L,"Namastute"," ", ImageUri("https://i.scdn.co/image/ab67616d00004851d65e2670b7176415b9d88a59"),false,false  )
+//    )
+//}

@@ -1,5 +1,8 @@
 package com.aadityaverma.remotify.presentation.common
 
+import android.content.Context
+import android.service.controls.ControlsProviderService.TAG
+import android.util.Log
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -8,14 +11,26 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
-import com.aadityaverma.remotify.data.Tracks
+
+
+import com.aadityaverma.remotify.data.datasource.Track
+import com.aadityaverma.remotify.data.repository.Player
 import com.aadityaverma.remotify.presentation.Dimens.ExtraSmallPadding2
 import com.aadityaverma.remotify.presentation.Dimens.MediumPadding1
 import com.aadityaverma.remotify.presentation.components.TrackCard
-import com.spotify.protocol.types.Track
 
+import com.spotify.android.appremote.api.ConnectionParams
+import com.spotify.android.appremote.api.Connector
+import com.spotify.android.appremote.api.SpotifyAppRemote
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+
+
+ var spotifyAppRemote: SpotifyAppRemote? = null
 @Composable
 fun handlePagingResult(tracks: LazyPagingItems<Track>): Boolean {
     val loadState = tracks.loadState
@@ -40,8 +55,10 @@ fun handlePagingResult(tracks: LazyPagingItems<Track>): Boolean {
 fun TrackList(
     modifier: Modifier = Modifier,
     tracks: LazyPagingItems<Track>,
-    onClick: (Track) -> Unit
+    callback: Player,
+    onClick: () -> Unit
 ) {
+    val context = LocalContext.current
     val handlePagingResult = handlePagingResult(tracks = tracks)
     if (handlePagingResult) {
         LazyColumn(
@@ -53,12 +70,21 @@ fun TrackList(
                 tracks[index]?.let {
                     TrackCard(
                         track = it,
-                        onClick = { onClick(it) }
+                        onClick = {
+                            // Call the function to play the track via Spotify remote player
+//                            playTrackViaSpotifyRemote(it)
+                            callback.playTrack(it)
+                        }
                     )
                 }
             }
         }
     }
+}
+
+fun playTrackViaSpotifyRemote(track: Track, context: Context) {
+
+
 }
 
 

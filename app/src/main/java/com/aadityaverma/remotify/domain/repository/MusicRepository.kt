@@ -1,7 +1,8 @@
 package com.aadityaverma.remotify.domain.repository
 
 import androidx.paging.PagingData
-import com.spotify.protocol.types.Track
+import com.aadityaverma.remotify.data.datasource.Track
+
 import kotlinx.coroutines.flow.Flow
 
 interface MusicRepository {

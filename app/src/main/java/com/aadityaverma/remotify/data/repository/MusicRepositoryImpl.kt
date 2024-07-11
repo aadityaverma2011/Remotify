@@ -6,8 +6,9 @@ import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import com.aadityaverma.remotify.data.SearchMusicPagingSource
 import com.aadityaverma.remotify.data.api.SpotifyApiService
+import com.aadityaverma.remotify.data.datasource.Track
 import com.aadityaverma.remotify.domain.repository.MusicRepository
-import com.spotify.protocol.types.Track
+
 import kotlinx.coroutines.flow.Flow
 
 class MusicRepositoryImpl(private val musicApi: SpotifyApiService, private val sharedPreferences: SharedPreferences):MusicRepository {
