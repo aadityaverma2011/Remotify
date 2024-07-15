@@ -27,7 +27,11 @@ import androidx.navigation.NavGraph
 import androidx.navigation.compose.rememberNavController
 import com.aadityaverma.remotify.data.SpotifySearchResponse
 import com.aadityaverma.remotify.data.api.SpotifyApiService
+import com.aadityaverma.remotify.data.datasource.SearchResult
+
+import com.aadityaverma.remotify.data.datasource.YtMusicResponse
 import com.aadityaverma.remotify.data.repository.Player
+import com.aadityaverma.remotify.di.AppModule.provideMusic2Api
 import com.aadityaverma.remotify.di.AppModule.provideMusicApi
 //import com.aadityaverma.remotify.data.datasource.RetrofitBuild
 import com.aadityaverma.remotify.presentation.navgraph.Navigation
@@ -42,6 +46,9 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.http.Query
 import java.net.HttpURLConnection
@@ -68,9 +75,12 @@ class MainActivity : ComponentActivity(),Player {
 //        }
 //        playTrack()
         val searchquery:String = "namastute seedhe maut"
-        searchTrack(searchquery, sharedPreferences.getString("access_token",null).toString())
+//        searchTrack(searchquery, sharedPreferences.getString("access_token",null).toString())
         val newlogstring = getProfile(sharedPreferences.getString("access_token",null))
-        Log.d(TAG,"profilex"+ newlogstring )
+//        Log.d(TAG,"profilex"+ newlogstring )
+
+        Log.d(TAG,"checkmark" )
+        searchTrack2(searchquery)
     }
 
 
@@ -171,6 +181,39 @@ class MainActivity : ComponentActivity(),Player {
             response
         }
     }
+    fun searchTrack2(query: String) {
+        val ytmusicApi = provideMusic2Api()
+        val call = ytmusicApi.search(query)
+
+        call.enqueue(object : Callback<YtMusicResponse> {
+            override fun onResponse(call: Call<YtMusicResponse>, response: Response<YtMusicResponse>) {
+                if (response.isSuccessful) {
+                    val ytMusicResponse = response.body()
+                    val tracks = ytMusicResponse?.searchResults ?: emptyList()
+
+                    tracks.forEach { track ->
+                        println("Track ID: ${track.videoId ?: "Unknown"}")
+                        println("Track Name: ${track.title ?: "Unknown"}")
+                        val artists = track.artists?.joinToString { it.name ?: "Unknown" } ?: "Unknown"
+                        println("Artists: $artists")
+                        val thumbnails = track.thumbnails?.joinToString { it.url ?: "Unknown" } ?: "Unknown"
+                        println("Thumbnails: $thumbnails")
+                        println("-----")
+                    }
+                } else {
+                    println("Error: ${response.code()}")
+                    // Handle specific error codes if needed
+                }
+            }
+
+            override fun onFailure(call: Call<YtMusicResponse>, t: Throwable) {
+                println("Failure: ${t.message}")
+                // Handle failure scenario, e.g., retry logic, error messages
+            }
+        })
+    }
+
+
 
     fun searchTrack(query: String, token: String) {
         val spotifyApiService = provideMusicApi()

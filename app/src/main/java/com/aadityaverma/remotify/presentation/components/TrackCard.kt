@@ -53,7 +53,7 @@ fun TrackCard(
                 modifier = Modifier.weight(1f)
             ) {
             Text(text = track.name, maxLines = 1 , style= MaterialTheme.typography.titleMedium)
-//            Text(text = track.artist.name, maxLines = 1 , style= MaterialTheme.typography.labelSmall)
+            Text(text = track.artists.first().name, maxLines = 1 , style= MaterialTheme.typography.labelSmall)
 
         }
 

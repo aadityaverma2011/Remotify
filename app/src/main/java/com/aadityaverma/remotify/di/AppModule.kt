@@ -4,6 +4,7 @@ import android.app.Application
 import android.content.Context
 import android.content.SharedPreferences
 import com.aadityaverma.remotify.data.api.SpotifyApiService
+import com.aadityaverma.remotify.data.api.YoutubeMusicApiService
 import com.aadityaverma.remotify.data.repository.MusicRepositoryImpl
 import com.aadityaverma.remotify.domain.repository.MusicRepository
 import com.aadityaverma.remotify.domain.usecases.Musicusecases
@@ -19,11 +20,22 @@ import javax.inject.Singleton
 @Module
 @InstallIn(SingletonComponent::class)
 object AppModule {
+
+    private val BaseURL1= "https://api.spotify.com/"
+    private val BaseURL2= "https://0e2f-182-68-222-31.ngrok-free.app"
+
     @Provides
     @Singleton
     fun provideMusicApi(): SpotifyApiService {
-        return Retrofit.Builder().baseUrl("https://api.spotify.com/").addConverterFactory(GsonConverterFactory.create()).build().create(SpotifyApiService::class.java)
+        return Retrofit.Builder().baseUrl(BaseURL1).addConverterFactory(GsonConverterFactory.create()).build().create(SpotifyApiService::class.java)
     }
+
+    @Provides
+    @Singleton
+    fun provideMusic2Api(): YoutubeMusicApiService {
+        return Retrofit.Builder().baseUrl(BaseURL2).addConverterFactory(GsonConverterFactory.create()).build().create(YoutubeMusicApiService::class.java)
+    }
+
 
     @Provides
     @Singleton
