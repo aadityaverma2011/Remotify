@@ -2,6 +2,7 @@ package com.aadityaverma.remotify.presentation.components
 
 import android.service.controls.ControlsProviderService.TAG
 import android.util.Log
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -18,6 +19,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
@@ -58,14 +60,29 @@ fun TrackCard(
             Text(text = track.artists.first(), maxLines = 1 , style= MaterialTheme.typography.labelSmall)
 
         }
+        if (track.source=="Spotify"){
+            Image(
+                painter = painterResource(id = com.aadityaverma.remotify.R.drawable.spotify),
+                contentDescription = null,
+                modifier = Modifier.size(24.dp)
+            )
+        }else if (track.source=="YouTube"){
+            Image(
+                painter = painterResource(id = com.aadityaverma.remotify.R.drawable.youtubemusic),
+                contentDescription = null,
+                modifier = Modifier.size(24.dp)
+            )
+        }
 
     }
 }
 
 
-//@Preview
-//@Composable
-//fun TrackCardPreview(){
-//    TrackCard(track = Track(Artist("Seedhe Maut"," "), null, null , 0L,"Namastute"," ", ImageUri("https://i.scdn.co/image/ab67616d00004851d65e2670b7176415b9d88a59"),false,false  )
-//    )
-//}
+@Preview
+@Composable
+fun TrackCardPreview(){
+    TrackCard(track = UnifiedTrack("Song1","sdd",
+        listOf("https://picsum.photos/200/300"),"https://picsum.photos/200/300","Spotify")
+    )
+
+}
