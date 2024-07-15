@@ -17,6 +17,7 @@ import androidx.paging.compose.LazyPagingItems
 
 
 import com.aadityaverma.remotify.data.datasource.Track
+import com.aadityaverma.remotify.data.datasource.UnifiedTrack
 import com.aadityaverma.remotify.data.repository.Player
 import com.aadityaverma.remotify.presentation.Dimens.ExtraSmallPadding2
 import com.aadityaverma.remotify.presentation.Dimens.MediumPadding1
@@ -32,7 +33,7 @@ import kotlinx.coroutines.launch
 
  var spotifyAppRemote: SpotifyAppRemote? = null
 @Composable
-fun handlePagingResult(tracks: LazyPagingItems<Track>): Boolean {
+fun handlePagingResult(tracks: LazyPagingItems<UnifiedTrack>): Boolean {
     val loadState = tracks.loadState
     val error = when {
         loadState.refresh is LoadState.Error -> loadState.refresh as LoadState.Error
@@ -54,7 +55,7 @@ fun handlePagingResult(tracks: LazyPagingItems<Track>): Boolean {
 @Composable
 fun TrackList(
     modifier: Modifier = Modifier,
-    tracks: LazyPagingItems<Track>,
+    tracks: LazyPagingItems<UnifiedTrack>,
     callback: Player,
     onClick: () -> Unit
 ) {

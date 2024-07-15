@@ -23,6 +23,7 @@ import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.aadityaverma.remotify.data.datasource.Track
+import com.aadityaverma.remotify.data.datasource.UnifiedTrack
 import com.aadityaverma.remotify.presentation.Dimens.TrackCardSize
 import com.spotify.protocol.types.Artist
 import com.spotify.protocol.types.ImageUri
@@ -33,7 +34,7 @@ import com.spotify.protocol.types.ImageUri
 @Composable
 fun TrackCard(
     modifier: Modifier= Modifier,
-    track: Track,
+    track: UnifiedTrack,
     onClick:(() -> Unit)? = null
 ){
     val context= LocalContext.current
@@ -44,7 +45,7 @@ fun TrackCard(
             modifier = Modifier
                 .size(56.dp)
                 .clip(MaterialTheme.shapes.small),
-            model= ImageRequest.Builder(context).data(track.album.images.firstOrNull()?.url).build(),
+            model= ImageRequest.Builder(context).data(track.albumArtUrl).build(),
             contentDescription= null,
             contentScale= ContentScale.Crop
         )
@@ -52,8 +53,9 @@ fun TrackCard(
         Column(verticalArrangement = Arrangement.SpaceAround,
                 modifier = Modifier.weight(1f)
             ) {
+
             Text(text = track.name, maxLines = 1 , style= MaterialTheme.typography.titleMedium)
-            Text(text = track.artists.first().name, maxLines = 1 , style= MaterialTheme.typography.labelSmall)
+            Text(text = track.artists.first(), maxLines = 1 , style= MaterialTheme.typography.labelSmall)
 
         }
 

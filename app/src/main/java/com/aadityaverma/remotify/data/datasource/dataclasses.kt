@@ -27,6 +27,3 @@ data class Tracks(
     val items: List<Track>
 )
 
-data class SpotifySearchResponse(
-    val tracks: Tracks
-)

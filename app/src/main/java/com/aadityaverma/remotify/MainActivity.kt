@@ -248,7 +248,7 @@ class MainActivity : ComponentActivity(),Player {
         })
     }
 
-    override fun playTrack(track: com.aadityaverma.remotify.data.datasource.Track) {
+    override fun playTrack(track: com.aadityaverma.remotify.data.datasource.UnifiedTrack) {
         spotifyAppRemote?.let {
             it.playerApi.play(track.uri)
         }

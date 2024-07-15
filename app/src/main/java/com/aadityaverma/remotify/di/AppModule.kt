@@ -46,10 +46,11 @@ object AppModule {
     @Provides
     @Singleton
    fun provideMusicRepository(
-       musicApi: SpotifyApiService,
+       spotifyapi: SpotifyApiService,
+       youtubemusicapi: YoutubeMusicApiService,
        sharedPreferences: SharedPreferences
    ): MusicRepository{
-       return MusicRepositoryImpl(musicApi,sharedPreferences)
+       return MusicRepositoryImpl(spotifyapi,youtubemusicapi,sharedPreferences)
    }
 
     @Provides
